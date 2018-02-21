@@ -32,7 +32,7 @@ attachments_json = [
         "color": "#3AA3E3",
         "attachment_type": "default",
         "callback_id": "menu_options_2319",
-        "text": puzzle
+        "text": puzzle,
         "actions": [
             {
                 "name": "finish",
