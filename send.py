@@ -91,7 +91,7 @@ def message_actions():
     form_json = json.loads(request.form["payload"])
 
     # Check to see what the user's selection was and update the message
-    selection = form_json["actions"][0]["selected_options"][0]["value"]
+    selection = form_json["actions"][0]["value"]
 
     if selection == "finish":
         message_text = "Great job!"
