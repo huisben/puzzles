@@ -86,7 +86,8 @@ print(slack_client.api_call(
 
 @app.route("/slack/message_actions", methods=["POST"])
 def message_actions():
-
+    global puzzles
+    global puzzle
     # Parse the request payload
     form_json = json.loads(request.form["payload"])
 
@@ -98,7 +99,7 @@ def message_actions():
     else:
         message_text = "Fail! Here's the solution: " + puzzles[puzzle]
     
-    puzzles.pop(puzzle)
+    puzzle = puzzles.pop(puzzle)
     puzzle = random.choice(list(puzzles.keys()))
 
     response = slack_client.api_call(
