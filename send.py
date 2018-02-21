@@ -57,7 +57,7 @@ attachments_json = [
 
 print(slack_client.api_call(
   "chat.postMessage",
-  channel="@ben",
+  channel="2-and-a-half-dummies",
   text="Ready for today's puzzle?",
   attachments=attachments_json
 ))
@@ -97,6 +97,8 @@ def message_actions():
         message_text = "Great job!"
     else:
         message_text = "Fail! Here's the solution: " + puzzles[puzzle]
+
+    puzzle = random.choice(list(puzzles.keys()))
 
     response = slack_client.api_call(
       "chat.update",
