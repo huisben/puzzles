@@ -57,7 +57,7 @@ attachments_json = [
 
 print(slack_client.api_call(
   "chat.postMessage",
-  channel="#2-and-a-half-dummies",
+  channel="2-and-a-half-dummies",
   text="Ready for today's puzzle?",
   attachments=attachments_json
 ))
