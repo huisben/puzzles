@@ -95,7 +95,8 @@ def message_actions():
     selection = form_json["actions"][0]["value"]
 
     if selection == "finish":
-        message_text = "Great job!"
+        message_text = "Great job! Here's the solution anyway: " + puzzles[puzzle]
+        
     else:
         message_text = "Fail! Here's the solution: " + puzzles[puzzle]
     
@@ -103,12 +104,20 @@ def message_actions():
     puzzle = random.choice(list(puzzles.keys()))
 
     response = slack_client.api_call(
-      "chat.update",
+      "chat.postMessage",
       channel=form_json["channel"]["id"],
       ts=form_json["message_ts"],
       text=message_text,
       attachments=[]
     )
+
+    if selection == "finish":
+        print(slack_client.api_call(
+          "chat.postMessage",
+          channel="G6BRDQGE9",
+          text="Here's another one!",
+          attachments=attachments_json
+        ))
 
     return make_response("", 200)
 
