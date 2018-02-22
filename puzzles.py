@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 import scrapy
-#import urllib2
+#from urllib.request import urlretrieve
 
 # 2010: 6 - 28
 
@@ -33,13 +33,19 @@ def main():
 					results[pdf[6:]] =  pdf[6:] + '&view=solution'
 
 
-	output = open('puzzles.csv','w')
+	# output = open('puzzles.csv','w')
 
 	for k, v in results.items():
-		output.write(BASE_URL+k)
-		output.write(',')
-		output.write(BASE_URL+v)
-		output.write('\n')
+		# output.write(BASE_URL+k)
+		# output.write(',')
+		# output.write(BASE_URL+v)
+		# output.write('\n')
+
+		with open('pdfs/'+k.split('=',1)[-1]+'.pdf', 'wb') as file:
+			response = requests.get(BASE_URL+k)
+			file.write(response.content)
+
+		#urlretrieve(BASE_URL+k,"pdfs/"+k+".pdf")
 
 
 

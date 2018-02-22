@@ -26,40 +26,53 @@ for k, v in reader:
 
 puzzle = random.choice(list(puzzles.keys()))
 
-attachments_json = [
-    {
-        "fallback": "wot mate",
-        "color": "#3AA3E3",
-        "attachment_type": "default",
-        "callback_id": "menu_options_2319",
-        "text": puzzle,
-        "actions": [
-            {
-                "name": "finish",
-                "text": "Done!",
-                "type": "button",
-                "style": "primary",
-                "value": "finish",
-                "data_source": "external"
-            },
-            {
-                "name": "quit",
-                "text": "Give up",
-                "type": "button",
-                "style": "danger",
-                "value": "quit",
-                "data_source": "external"
-            }
-        ]
-    }
-]
+#puzzle = new_puzzle().key
+
+def get_sol(key):
+    global puzzles
+    #puzzle = random.choice(list(puzzles.keys()))
+    return puzzles.pop(key)
+
+
+def make_attachment(text):
+
+    attachments_json = [
+        {
+            "fallback": "wot mate",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+            "callback_id": "menu_options_2319",
+            "text": text,
+            "actions": [
+                {
+                    "name": "finish",
+                    "text": "Done!",
+                    "type": "button",
+                    "style": "primary",
+                    "value": "finish",
+                    "data_source": "external"
+                },
+                {
+                    "name": "quit",
+                    "text": "Give up",
+                    "type": "button",
+                    "style": "danger",
+                    "value": "quit",
+                    "data_source": "external"
+                }
+            ]
+        }
+    ]
+
+    return attachments_json
+
 
 
 print(slack_client.api_call(
   "chat.postMessage",
-  channel="G6BRDQGE9",
+  channel="@ben", #"G6BRDQGE9",
   text="Ready for today's puzzle?",
-  attachments=attachments_json
+  attachments=make_attachment(puzzle)
 ))
 
 
@@ -88,25 +101,28 @@ print(slack_client.api_call(
 def message_actions():
     global puzzles
     global puzzle
+
+    print(request.form)
     # Parse the request payload
     form_json = json.loads(request.form["payload"])
 
     # Check to see what the user's selection was and update the message
     selection = form_json["actions"][0]["value"]
 
+    print(selection)
     if selection == "finish":
-        message_text = "Great job! Here's the solution anyway: " + puzzles[puzzle]
+        message_text = "Great job! Here's the solution anyway: " + get_sol(puzzle)
         
     else:
-        message_text = "Fail! Here's the solution: " + puzzles[puzzle]
+        message_text = "Fail! Here's the solution: " + get_sol(puzzle)
     
-    puzzle = puzzles.pop(puzzle)
+    #puzzle = puzzles.pop(puzzle)
     puzzle = random.choice(list(puzzles.keys()))
 
     response = slack_client.api_call(
       "chat.postMessage",
       channel=form_json["channel"]["id"],
-      ts=form_json["message_ts"],
+      # ts=form_json["message_ts"],
       text=message_text,
       attachments=[]
     )
@@ -114,9 +130,9 @@ def message_actions():
     if selection == "finish":
         print(slack_client.api_call(
           "chat.postMessage",
-          channel="G6BRDQGE9",
+          channel="@ben", #"G6BRDQGE9",
           text="Here's another one!",
-          attachments=attachments_json
+          attachments=make_attachment(puzzle)
         ))
 
     return make_response("", 200)
