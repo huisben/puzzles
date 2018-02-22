@@ -75,28 +75,6 @@ print(slack_client.api_call(
   attachments=make_attachment(puzzle)
 ))
 
-
-@app.route("/slack/message_options", methods=["POST"])
-# def message_options():
-#     # Parse the request payload
-#     form_json = json.loads(request.form["payload"])
-
-#     # menu_options = {
-#     #     "options": [
-#     #         {
-#     #             "text": "Chess",
-#     #             "value": "chess"
-#     #         },
-#     #         {
-#     #             "text": "Global Thermonuclear War",
-#     #             "value": "war"
-#     #         }
-#     #     ]
-#     # }
-
-#     return Response(json.dumps(menu_options), mimetype='application/json')
-
-
 @app.route("/slack/message_actions", methods=["POST"])
 def message_actions():
     global puzzles
