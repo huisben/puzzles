@@ -70,7 +70,7 @@ def make_attachment(text):
 
 print(slack_client.api_call(
   "chat.postMessage",
-  channel="@ben", #"G6BRDQGE9",
+  channel="G6BRDQGE9",#"@ben"
   text="Ready for today's puzzle?",
   attachments=make_attachment(puzzle)
 ))
@@ -130,7 +130,7 @@ def message_actions():
     if selection == "finish":
         print(slack_client.api_call(
           "chat.postMessage",
-          channel="@ben", #"G6BRDQGE9",
+          channel="G6BRDQGE9",#"@ben",
           text="Here's another one!",
           attachments=make_attachment(puzzle)
         ))
