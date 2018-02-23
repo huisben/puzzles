@@ -93,25 +93,26 @@ def message_actions():
     global puzzles
     global puzzle
 
-    if request.form['token'] == SLACK_VERIFICATION_TOKEN:
-        print(request.form)
+    print(request.form)
+    #if request.form['token'] == SLACK_VERIFICATION_TOKEN:
+        
         # Parse the request payload
-        form_json = json.loads(request.form["payload"])
+    form_json = json.loads(request.form["payload"])
 
-        # Check to see what the user's selection was and update the message
-        selection = form_json["actions"][0]["value"]
+    # Check to see what the user's selection was and update the message
+    selection = form_json["actions"][0]["value"]
 
-        if selection == "finish":
-            message_text = "Great job! Here's the solution anyway: " + get_sol(puzzle)
-        else:
-            message_text = "Fail! Here's the solution: " + get_sol(puzzle)
+    if selection == "finish":
+        message_text = "Great job! Here's the solution anyway: " + get_sol(puzzle)
+    else:
+        message_text = "Fail! Here's the solution: " + get_sol(puzzle)
 
-        response = slack_client.api_call(
-          "chat.postMessage",
-          channel=form_json["channel"]["id"],
-          text=message_text,
-          attachments=[]
-        )
+    response = slack_client.api_call(
+      "chat.postMessage",
+      channel=form_json["channel"]["id"],
+      text=message_text,
+      attachments=[]
+    )
 
     return make_response("", 200)
 
