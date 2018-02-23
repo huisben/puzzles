@@ -101,7 +101,7 @@ def message_actions():
 
     og_message = form_json["original_message"]["attachments"][0]["text"]
     print(og_message)
-    og_message = urllib.parse.unquoate(og_message)[1:-1]
+    og_message = urllib.parse.unquote(og_message[1:-1])
     print(og_message)
     
     if form_json['token'] == SLACK_VERIFICATION_TOKEN:
