@@ -3,6 +3,7 @@ import os
 import json
 import csv
 import random
+import urllib
 
 from slackclient import SlackClient
 
@@ -23,6 +24,7 @@ with open('puzzles.csv', 'r') as f:
     for k, v in reader:
         puzzles[k] = v
 
+ogpuzzles = dict(puzzles)
 puzzle = random.choice(list(puzzles.keys()))
 
 
@@ -96,15 +98,20 @@ def message_actions():
     # Parse the request payload
     form_json = json.loads(request.form["payload"])
     print(request.form)
+
+    og_message = form_json["original_message"]["attachments"][0]["text"]
+    print(og_message)
+    og_message = urllib.parse.unquoate(og_message)[1:-1]
+    print(og_message)
     
     if form_json['token'] == SLACK_VERIFICATION_TOKEN:
         # Check to see what the user's selection was and update the message
         selection = form_json["actions"][0]["value"]
 
         if selection == "finish":
-            message_text = "Great job! Here's the solution anyway: " + get_sol(puzzle)
+            message_text = "Great job! Here's the solution anyway: " + get_sol(og_message)
         else:
-            message_text = "Fail! Here's the solution: " + get_sol(puzzle)
+            message_text = "Fail! Here's the solution: " + get_sol(og_message)
 
         response = slack_client.api_call(
           "chat.postMessage",
