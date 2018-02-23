@@ -66,8 +66,8 @@ def make_attachment(text):
 def send_msg(channel, text, puzzle):
     slack_client.api_call(
       "chat.postMessage",
-      channel=channel  # "G6BRDQGE9",#"@ben"
-      text= text  #"Ready for today's puzzle?",
+      channel=channel,  # "G6BRDQGE9",#"@ben"
+      text=text,  #"Ready for today's puzzle?",
       attachments=make_attachment(puzzle)
     )
 

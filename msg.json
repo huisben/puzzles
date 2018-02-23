@@ -1,4 +1,0 @@
-"payload={\"username\": \"SOLVE DIS NAO\",\"icon_emoji\":\":thinkingfaces:\",\"channel\":\"@ben\",\"text\":\"Here's <https://www.collegepuzzlechallenge.com/Puzzles/ViewPuzzle.ashx?id=1317|today's puzzle>!\"}"
-
-
-	curl -X POST --data-urlencode "payload={\"username\": \"SOLVE DIS NAO\",\"icon_emoji\":\":thinkingfaces:\",\"channel\":\"@ben\",\"text\":\"Here's <https://www.collegepuzzlechallenge.com/Puzzles/ViewPuzzle.ashx?id=1317|today's puzzle>!\"}" https://hooks.slack.com/services/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
