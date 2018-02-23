@@ -79,9 +79,11 @@ def new_puzzle():
     global puzzle 
 
     #if request.form['token'] == SLACK_VERIFICATION_TOKEN:
+
+    print(request.form)
     puzzle = random.choice(list(puzzles.keys()))
     form_json = json.loads(request.form["payload"])
-    send_msg(form_json["channel"]["id"], "Here's a new puzzle!", puzzle)
+    send_msg("@ben", "Here's a new puzzle!", puzzle)
 
     return make_response("", 200)
 
