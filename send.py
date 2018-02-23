@@ -6,7 +6,6 @@ import random
 
 from slackclient import SlackClient
 
-# Your app's Slack bot user token
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_VERIFICATION_TOKEN = os.environ["SLACK_VERIFICATION_TOKEN"] 
 
@@ -16,23 +15,21 @@ slack_client = SlackClient(SLACK_BOT_TOKEN)
 # Flask webserver for incoming traffic from Slack
 app = Flask(__name__)
 
-# Post a message to a channel, asking users if they want to play a game
 
-reader = csv.reader(open('puzzles.csv', 'r'))
 puzzles = {}
 
-for k, v in reader:
-    puzzles[k] = v
+with open('puzzles.csv', 'r') as f:
+    reader = csv.reader(f)
+    for k, v in reader:
+        puzzles[k] = v
 
 puzzle = random.choice(list(puzzles.keys()))
 
-#puzzle = new_puzzle().key
+send_msg("G6BRDQGE9", "Ready for today's puzzle?", puzzle)
 
 def get_sol(key):
     global puzzles
-    #puzzle = random.choice(list(puzzles.keys()))
     return puzzles.pop(key)
-
 
 def make_attachment(text):
 
@@ -41,7 +38,7 @@ def make_attachment(text):
             "fallback": "wot mate",
             "color": "#3AA3E3",
             "attachment_type": "default",
-            "callback_id": "menu_options_2319",
+            "callback_id": "puzz1",
             "text": text,
             "actions": [
                 {
@@ -66,52 +63,49 @@ def make_attachment(text):
 
     return attachments_json
 
+def send_msg(channel, text, puzzle):
+    slack_client.api_call(
+      "chat.postMessage",
+      channel=channel  # "G6BRDQGE9",#"@ben"
+      text= text  #"Ready for today's puzzle?",
+      attachments=make_attachment(puzzle)
+    )
 
+@app.route("/slack/new", methods=["POST"])
+def new_puzzle():
+    global puzzles
+    global puzzle 
 
-print(slack_client.api_call(
-  "chat.postMessage",
-  channel="G6BRDQGE9",#"@ben"
-  text="Ready for today's puzzle?",
-  attachments=make_attachment(puzzle)
-))
+    if request.form['token'] == SLACK_VERIFICATION_TOKEN:
+        puzzle = random.choice(list(puzzles.keys()))
+        send_msg("G6BRDQGE9", "Here's a new puzzle!", puzzle)
+
+    return make_response("", 200)
 
 @app.route("/slack/message_actions", methods=["POST"])
 def message_actions():
     global puzzles
     global puzzle
 
-    print(request.form)
-    # Parse the request payload
-    form_json = json.loads(request.form["payload"])
+    if request.form['token'] == SLACK_VERIFICATION_TOKEN:
+        print(request.form)
+        # Parse the request payload
+        form_json = json.loads(request.form["payload"])
 
-    # Check to see what the user's selection was and update the message
-    selection = form_json["actions"][0]["value"]
+        # Check to see what the user's selection was and update the message
+        selection = form_json["actions"][0]["value"]
 
-    print(selection)
-    if selection == "finish":
-        message_text = "Great job! Here's the solution anyway: " + get_sol(puzzle)
-        
-    else:
-        message_text = "Fail! Here's the solution: " + get_sol(puzzle)
-    
-    #puzzle = puzzles.pop(puzzle)
-    puzzle = random.choice(list(puzzles.keys()))
+        if selection == "finish":
+            message_text = "Great job! Here's the solution anyway: " + get_sol(puzzle)
+        else:
+            message_text = "Fail! Here's the solution: " + get_sol(puzzle)
 
-    response = slack_client.api_call(
-      "chat.postMessage",
-      channel=form_json["channel"]["id"],
-      # ts=form_json["message_ts"],
-      text=message_text,
-      attachments=[]
-    )
-
-    if selection == "finish":
-        print(slack_client.api_call(
+        response = slack_client.api_call(
           "chat.postMessage",
-          channel="G6BRDQGE9",#"@ben",
-          text="Here's another one!",
-          attachments=make_attachment(puzzle)
-        ))
+          channel=form_json["channel"]["id"],
+          text=message_text,
+          attachments=[]
+        )
 
     return make_response("", 200)
 
