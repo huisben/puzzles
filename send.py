@@ -25,7 +25,7 @@ with open('puzzles.csv', 'r') as f:
 
 puzzle = random.choice(list(puzzles.keys()))
 
-send_msg("G6BRDQGE9", "Ready for today's puzzle?", puzzle)
+
 
 def get_sol(key):
     global puzzles
@@ -71,6 +71,8 @@ def send_msg(channel, text, puzzle):
       attachments=make_attachment(puzzle)
     )
 
+# send_msg("G6BRDQGE9", "Ready for today's puzzle?", puzzle)    
+
 @app.route("/slack/new", methods=["POST"])
 def new_puzzle():
     global puzzles
@@ -78,7 +80,8 @@ def new_puzzle():
 
     if request.form['token'] == SLACK_VERIFICATION_TOKEN:
         puzzle = random.choice(list(puzzles.keys()))
-        send_msg("G6BRDQGE9", "Here's a new puzzle!", puzzle)
+        form_json = json.loads(request.form["payload"])
+        send_msg(form_json["channel"]["id"], "Here's a new puzzle!", puzzle)
 
     return make_response("", 200)
 
